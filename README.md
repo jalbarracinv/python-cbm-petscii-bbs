@@ -1,4 +1,4 @@
-# python-cbm-bbs
+# python-cbm-bbs-petscii
 Python Commodore BBS multi-client
 
 This is a working Python 3.X script that will help you implement a Commodore Petscii BBS.
