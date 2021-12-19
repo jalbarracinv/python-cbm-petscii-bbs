@@ -1,4 +1,4 @@
-# python-cbm-bbs-petscii
+# Python cbm bbs petscii
 Python Commodore BBS multi-client
 This is intended for commodore 64, c128 and most commodore compatible machines (as the new Commander X16 under development) 
 
