@@ -10,4 +10,4 @@ Included Files:
 
 2) funct.py -> main bbs functions
 
-3) head.seq -> a sequence (random chars) file generated with http://petscii.krissz.hu/ 
+3) head.seq -> a sequence (random chars) file generated with http://petscii.krissz.hu/ this is just to have "something" to show to the user.
