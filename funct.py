@@ -1,3 +1,4 @@
+#Simple Dictionary converts ascii into petscii binary
 petscii={'A':b'\xc1','B':b'\xc2','C':b'\xc3','D':b'\xc4','E':b'\xc5','F':b'\xc6','G':b'\xc7','H':b'\xc8',
 'I':b'\xc9','J':b'\xca','K':b'\xcb','L':b'\xcc','M':b'\xcd','N':b'\xce','O':b'\xcf','P':b'\xd0',
 'Q':b'\xd1','R':b'\xd2','S':b'\xd3','T':b'\xd4','U':b'\xd5','V':b'\xd6','W':b'\xd7','X':b'\xd8','Y':b'\xd9',
@@ -14,8 +15,7 @@ petscii={'A':b'\xc1','B':b'\xc2','C':b'\xc3','D':b'\xc4','E':b'\xc5','F':b'\xc6'
 '\x9f':b'\x9f','\x13':b'\x13',
 "'":b"\x27"}
 
-## '┤','─','│','▒','╭','╮','╯','╰','♠','♣','♥','♦','π','╳','╱','╲'
-
+#This function moves the cursor and changes color, clear screen
 def cbmcursor(tx):
     out = b''
     if tx=="right" : out =b'\x1d'
@@ -62,6 +62,7 @@ def cbmcursor(tx):
        if m==15: out =b'\x1e'
     return out
 
+#this function moves the cursor to an x,y position
 def cursorxy(connection,x,y):
       connection.send(cbmcursor("home"))
       cy=1
@@ -116,6 +117,7 @@ def cbmdecode(tx):
         if byten==b'\x8d': out=out+"\n"
      return out
 
+#reads a text line from user
 def input_line(connection):
      tline=b''
      while True:
@@ -141,6 +143,7 @@ def input_line(connection):
            break
      return tline
 
+#reads a password (and when typing it shows '*' to the user)
 def input_pass(connection):
      tline=b''
      bbb=0
@@ -171,6 +174,7 @@ def input_pass(connection):
            connection.send(b'*')
      return tline
 
+#similar to commodore basic get command (it just wait to type one char)
 def get_char(connection):
      while True:
         data = connection.recv(256, 0x40) #funciona como un input
@@ -182,6 +186,7 @@ def get_char(connection):
         connection.send(rchar)
         return(rchar)
 
+#this is to send the SEQ file to the user (useful for petscii graphics portions)
 def send_file(connection, filen):
     print (filen)
     with open(filen, "rb") as f:
