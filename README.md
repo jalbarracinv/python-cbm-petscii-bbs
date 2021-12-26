@@ -1,4 +1,7 @@
 # Python cbm bbs petscii
+
+<img src="https://github.com/jalbarracinv/python-cbm-petscii-bbs/raw/main/commander.png" width="500"/>
+
 Python Commodore BBS multi-client
 This is intended for commodore 64, c128 and most commodore compatible machines (as the new Commander X16 under development) 
 
