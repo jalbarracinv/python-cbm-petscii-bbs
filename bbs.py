@@ -35,46 +35,42 @@ BBS.listen()
 def do_welcome(connection):
 
          #CLEAR SCREEN
-         connection.send(cbmcursor("clear"))
-         connection.send(cbmcursor("home"))
+         send_cr(connection, "clear") #sends a coded cursor
+         send_cr(connection, "home") #sends a coded cursor
 
          #SEND HEADER FILE (.SEQ)
          # print ("STATUS > will send seq")
-         connection.send(cbmencode("\n\n"))
-         send_file(connection, "welcome.seq")
+         send_ln(connection, "\n\n") #sends text
+         send_seq(connection, "welcome.seq") #sends a seq file to screen
 
          #THIS SECTION SENDS RANDOM THINGS (FOR YOU TO LEARN HOW)
-         connection.send(cbmcursor("red")) #cbmcursor sends color red code
-         connection.send(cbmencode("\n\nWelcome")) #cbmencode sends message
-         connection.send(cbmcursor("blue"))
-         connection.send(cbmencode(" a "))
-         connection.send(cbmcursor("purple"))
-         connection.send(cbmencode("CBMBBS\n\n"))
-         connection.send(cbmcursor("grey"))
+         send_cr(connection, "red") #cbmcursor sends color red code
+         send_ln(connection, "\n\nWelcome") # sends message
+         send_cr(connection, "blue") #cbmcursor sends color blue code
+         send_ln(connection, " to ") # sends message
+         send_cr(connection, "purple") #cbmcursor sends color purple code
+         send_ln(connection, "CBMBBS\n\n") # sends message
+         send_cr(connection, "gray") #cbmcursor sends color gray code
          welcome2="This is a text is a text" #You can also declare a string
-         connection.send(cbmencode(welcome2)) #and send it after cbmencode it
+         send_ln(connection, welcome2) #and send it after cbmencode it
          cursorxy(connection,1,1) #cursorxy positions cursor on x,y on screen
-         connection.send(cbmencode("i am at 1,1"))
+         send_ln(connection, "up1")
          cursorxy(connection,1,25)
-         connection.send(cbmencode("i am at  1,25"))
-         time.sleep(8)
+         send_ln(connection, "down25")
 
 def do_login(connection):
 
        #CLEAR SCREEN
-       connection.send(cbmcursor("clear"))
-       connection.send(cbmcursor("home"))
+       send_cr(connection,"clear")
+       send_cr(connection,"home")
        cursorxy(connection,1,3) #positions cursor on third line
-       imf=0 #sets a flag for an infinite loop in while
        maxtries=3 #max tries
        attempts=0
 
        while True:
          #Login (not finished)
-         connection.send(cbmencode("Username (new): "))
-         namex=input_line(connection) #input_line function reads a line
-         print("decoded name: ",cbmdecode(namex)) # this is displayed on system side
-         uname=cbmdecode(namex) #receives the name of the user
+         send_ln(connection,"Username (or 'new'): ")
+         uname=input_line(connection) #input_line function reads a line
 
          if (uname=="new"):
              uname,realid = do_newuser(connection)
@@ -82,9 +78,7 @@ def do_login(connection):
              break
 
          connection.send(cbmencode("Password: "))
-         pword=input_pass(connection) #input_pass reads a line but shows '*'
-         print("decoded pass: ",cbmdecode(pword)) # this is displayed on system side
-         upass=cbmdecode(pword) #receives the password  of the user
+         upass=input_pass(connection) #input_pass reads a line but shows '*'
 
          # Define QUERY
          query="SELECT id,username,password FROM accounts WHERE username='%s'"
@@ -95,7 +89,7 @@ def do_login(connection):
          myresult = mycursor.fetchone()
 
          if (myresult == None):
-            connection.send(cbmencode("\n\nIncorrect username or password.\n\n"))
+            send_ln(connection, "\n\nIncorrect username or password.\n\n")
             attempts=attempts+1
          else:
             realpass = myresult['password']
@@ -106,7 +100,7 @@ def do_login(connection):
                print("match!!")
                break
             else:
-               connection.send(cbmencode("\n\nIncorrect username or password.\n\n"))
+               send_ln(connection, "\n\nIncorrect username or password.\n\n")
                attempts=attempts+1
          if (attempts>=maxtries):
                connection.send(cbmencode("\n\nSorry maximum number of attempts reached..\n\n"))
@@ -117,19 +111,18 @@ def do_login(connection):
 
 def do_newuser(connection):
        #CLEAR SCREEN
-       connection.send(cbmcursor("clear"))
-       connection.send(cbmcursor("home"))
+       send_cr(connection, "clear")
+       send_cr(connection, "home")
        cursorxy(connection,1,3) #positions cursor on third line
-       connection.send(cbmencode("Welcome new user!\nLet's create a new username.\n\n"))
+       send_ln(connection, "Welcome new user!\nLet's create a new username.\n\n")
 
        #DEFINE Variables to control loop
-       maxtries=3 #max tries
+       maxtries=5 #max tries
        attempts=0
 
        while True:
-         connection.send(cbmencode("Type your username: "))
-         namex=input_line(connection) #input_line function reads a line
-         uname=cbmdecode(namex)
+         send_ln(connection, "Type your username: ")
+         uname=input_line(connection) #input_line function reads a line
 
          # Define QUERY
          query="SELECT id,username,password FROM accounts WHERE username='%s'"
@@ -139,60 +132,57 @@ def do_newuser(connection):
          mycursor.execute(query)
          myresult = mycursor.fetchone()
 
-         if(myresult == None):
-            connection.send(cbmencode("Your username is: "+uname+"\nAre you sure? (y/n): "))
-            letter=cbmdecode(get_char(connection))
+         #IF user does not exists
+         if(myresult == None and uname!="" and uname !="new"):
+            send_ln(connection, "Your username is: "+uname+"\nAre you sure? (y/n): ")
+            letter=get_char(connection)
             print("letra: ",letter)
-            connection.send(cbmencode("\n\n"))
+            send_ln(connection, "\n\n")
             attempts=attempts+1
             if(letter=="y" or letter=="Y"):
                print("YES!")
                break
          else:
-            connection.send(cbmencode("\nError: User already exists.\n"))
+            send_ln(connection, "\nError: User already exists.\n")
             attempts=attempts+1
 
          if attempts >=maxtries:
-            connection.send(cbmencode("Sorry, maximum number of attempts.\nConnection closed. "))
+            send_ln(connection, "Sorry, maximum number of attempts.\nConnection closed.")
             connection.close()
 
        attempts=0
 
        #Asks for password
        while True:
-         connection.send(cbmencode("\nType your password: "))
+         send_ln(connection,"\nType your password: ")
          pass1=input_pass(connection) #input_line function reads a line
-         pass1=cbmdecode(pass1)
-         connection.send(cbmencode("\nRepeat your password: "))
+         send_ln(connection, "\nRepeat your password: ")
          pass2=input_pass(connection) #input_line function reads a line
-         pass2=cbmdecode(pass2)
-         if(pass2==pass1):
+         if(pass1!="" and pass2==pass1):
            print("->"+pass1+"<-")
            break
          attempts=attempts+1
          if attempts >= maxtries:
-            connection.send(cbmencode("Sorry, maximum number of attempts.\nConnection closed. "))
+            send_ln(connection, "Sorry, maximum number of attempts.\nConnection closed. ")
             connection.close()
-         connection.send(cbmencode("\nError: Passwords don't match.\nTry Again.\n\n"))
+         send_ln(connection, "\nError: Passwords don't match.\nTry Again.\n\n")
 
        attempts=0
 
        #Asks for email
        while True:
-         connection.send(cbmencode("\nType your email: "))
+         send_ln(connection, "\nType your email: ")
          mail1=input_line(connection) #input_line function reads a line
-         mail1=cbmdecode(mail1)
-         connection.send(cbmencode("\nRepeat your email: "))
+         send_ln(connection, "\nRepeat your email: ")
          mail2=input_line(connection) #input_line function reads a line
-         mail2=cbmdecode(mail2)
-         if(mail2==mail1):
+         if(mail1!="" and mail2==mail1):
            print("email matches!")
            break
          attempts=attempts+1
          if attempts >= maxtries:
-            connection.send(cbmencode("Sorry, maximum number of attempts.\nConnection closed. "))
+            send_ln(connection, "Sorry, maximum number of attempts.\nConnection closed. ")
             connection.close()
-         connection.send(cbmencode("\nError: Emails don't match.\nTry Again.\n\n"))
+         send_ln(connection,"\nError: Emails don't match.\nTry Again.\n\n")
 
        print("Creating account:",uname)
        ## Creates user here
@@ -207,13 +197,11 @@ def do_newuser(connection):
 def do_bucle(connection,namex,idx):
 
          while True:
-           #Borra Pantalla y ENVIA MENU
-           print("Hola, ",namex,"->",idx)
-           connection.send(cbmencode("\n\nSelecciona Opcion: "))
+           #Clears Screen and sends MENU
+           print("USER -> ",namex,"->",idx)
+           send_ln(connection, "\n\nChoose an option: ")
            bucl=get_char(connection)
            print(bucl)
-           print("decoded: ",cbmdecode(bucl))
-
 
 ###########################################
 # MAIN BBS FUNCTIONS
@@ -223,10 +211,14 @@ def user_session(connection):
 
       while True:
 
-         #initializes terminal 
+         #initializes terminal
+         send_cr(connection,"clear")
+         send_cr(connection,"home")
+         send_ln(connection, "Connected. Hit any key...")
+         bucl=get_char(connection)
 
          do_welcome(connection)
-         time.sleep(2)
+         time.sleep(6)
 
          userx,idx = do_login(connection)
 

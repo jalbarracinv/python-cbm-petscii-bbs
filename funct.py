@@ -13,7 +13,7 @@ petscii={'A':b'\xc1','B':b'\xc2','C':b'\xc3','D':b'\xc4','E':b'\xc5','F':b'\xc6'
 '\x12':b'\x12','\x92':b'\x92','\x81':b'\x81','\x90':b'\x90','\x95':b'\x95','\x96':b'\x96',
 '\x97':b'\x97','\x98':b'\x98','\x99':b'\x99','\x9a':b'\x9a','\x9b':b'\x9b','\x9e':b'\x9e',
 '\x9f':b'\x9f','\x13':b'\x13',
-"'":b"\x27"}
+"'":b"\x27","=":b"\x3d","[":b"[","]":b"]",";":b";","↑":b"\x5e","←":b"\x5f"}
 
 #This function moves the cursor and changes color, clear screen
 def cbmcursor(tx):
@@ -33,6 +33,8 @@ def cbmcursor(tx):
     if tx=="brown": out =b'\x95'
     if tx=="pink": out =b'\x96'
     if tx=="dark grey": out=b'\x97'
+    if tx=="dark gray": out=b'\x97'
+    if tx=="gray": out=b'\x98'
     if tx=="grey": out=b'\x98'
     if tx=="lightgreen": out=b'\x99'
     if tx=="lightblue": out=b'\x9a'
@@ -42,7 +44,7 @@ def cbmcursor(tx):
     if tx=="cyan": out=b'\x9f'
     if tx=="revon": out=b'\x12'
     if tx=="revoff": out=b'\x92'
-    if tx=="rand":
+    if tx=="randc":
        m=random.randint(0, 15)
        if m==0: out =b'\x1f'
        if m==1: out =b'\x81'
@@ -143,6 +145,7 @@ def input_line(connection):
             tline=tline
         else:
             tline=tline+data
+     tline=cbmdecode(tline)
      return tline
 
 #reads a password (and when typing it shows '*' to the user)
@@ -176,22 +179,24 @@ def input_pass(connection):
             tline=tline
         else:
             tline=tline+data
+     tline=cbmdecode(tline)
      return tline
 
 #similar to commodore basic get command (it just wait to type one char)
 def get_char(connection):
      while True:
-        data = connection.recv(256, 0x40) #funciona como un input
+        data = connection.recv(256, 0x40) #works like a get
         if not data:
            print("no data - closed connection")
            connection.close()
            break
         rchar=data[0:1]
         connection.send(rchar)
+        rchar=cbmdecode(rchar)
         return(rchar)
 
 #this is to send the SEQ file to the user (useful for petscii graphics portions)
-def send_file(connection, filen):
+def send_seq(connection, filen):
     print (filen)
     with open(filen, "rb") as f:
         nb=b''
@@ -200,3 +205,11 @@ def send_file(connection, filen):
            nb = byte
            connection.send(nb)
            byte = f.read(1)
+
+def send_ln(connection, line):
+    linet=cbmencode(line)
+    connection.send(linet)
+
+def send_cr(connection, charx):
+    chrxx=cbmcursor(charx)
+    connection.send(chrxx)
