@@ -10,8 +10,8 @@ Included Files:
 
 2) funct.py -> main bbs functions
 
-3) head.seq -> a sequence (random chars) file generated with http://petscii.krissz.hu/ this is just to have "something" to show to the user.
-
+3) welcome.seq -> a sequence (random chars) file generated with http://petscii.krissz.hu/ this is a welcome banner example.
+   menu.seq -> a sequence (random chars) file generated with http://petscii.krissz.hu/ this is a menu example.
 ## To start, first create the needed databases in MySQL with the following commands:
 
 CREATE DATABASE `cbmbbs` /*!40100 DEFAULT CHARACTER SET utf8 */;
