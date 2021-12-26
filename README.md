@@ -49,6 +49,6 @@ CREATE TABLE `posts` (
   KEY `idx_boardmessages_replyid` (`idreply`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO boards (`idboard`,`name`) VALUES (2,'General2');
+INSERT INTO boards (`idboard`,`name`) VALUES (1,'General');
 
 
