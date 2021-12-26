@@ -126,21 +126,23 @@ def input_line(connection):
            print("no data - closed connection")
            connection.close()
            break
-        delchar=0
         if (data==b'\xff' or data==b'\xfb' or data==b'\x00' or data==b'\x01' or data==b'\xfd'):
            data=b''
         if (data==b'\xff\xfb\x01\xff\xfb\x00\xff\xfd\x00'):
            data=b''
         if (data==b'\x14'):
-           delchar=1
-        tline=tline+data
-        if (delchar==1):
-           tline=tline[0:len(tline)-2]
-        connection.send(data)
+           if (len(tline)==0):
+             data=b''
+           tline=tline[0:len(tline)-1]
         if (tline==b'\xff\xfb\x01\xff\xfb\x00\xff\xfd\x00'):
            tline=b''
+        connection.send(data)
         if (data==b'\r' or data==b'\r\n' or data==b'\n'):
            break
+        if (data==b'\x14'):
+            tline=tline
+        else:
+            tline=tline+data
      return tline
 
 #reads a password (and when typing it shows '*' to the user)
@@ -158,20 +160,22 @@ def input_pass(connection):
            data=b''
         if (data==b'\xff\xfb\x01\xff\xfb\x00\xff\xfd\x00'):
            data=b''
-        if (data==b'\r' or data==b'\r\n' or data==b'\n' or data==b'\n\r'):
-           data=b''
-           bbb=999
         if (data==b'\x14'):
-           delchar=1
-        tline=tline+data
-        if (delchar==1):
-           tline=tline[0:len(tline)-2]
+           if (len(tline)==0):
+             data=b''
+           tline=tline[0:len(tline)-1]
         if (tline==b'\xff\xfb\x01\xff\xfb\x00\xff\xfd\x00'):
            tline=b''
-        if (bbb==999):
-           break
+        if (data==b'\x14' or data==b'\r' or data==b'\r\n' or data==b'\n' or data==b''):
+            connection.send(data)
         else:
-           connection.send(b'*')
+            connection.send(b'*')
+        if (data==b'\r' or data==b'\r\n' or data==b'\n'):
+           break
+        if (data==b'\x14'):
+            tline=tline
+        else:
+            tline=tline+data
      return tline
 
 #similar to commodore basic get command (it just wait to type one char)
