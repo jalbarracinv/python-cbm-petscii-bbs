@@ -27,21 +27,11 @@ CREATE TABLE `accounts` (
   UNIQUE KEY `idx_accounts_username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `posts` (
-  `idmessage` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime DEFAULT NULL,
-  `subject` varchar(128) DEFAULT NULL,
-  `userid` int(11) DEFAULT NULL,
-  `idboard` int(11) DEFAULT NULL,
-  `body` blob DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `idreply` int(11) DEFAULT NULL,
-  PRIMARY KEY (`idmessage`),
-  KEY `idx_boardmessages_userid` (`userid`),
-  KEY `idx_boardmessages_boardid` (`idboard`),
-  KEY `idx_boardmessages_date` (`date`),
-  KEY `idx_boardmessages_replyid` (`idreply`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `boards` (
+  `idboard` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`idboard`,`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `posts` (
   `idmessage` int(11) NOT NULL AUTO_INCREMENT,
@@ -58,3 +48,5 @@ CREATE TABLE `posts` (
   KEY `idx_boardmessages_date` (`date`),
   KEY `idx_boardmessages_replyid` (`idreply`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
