@@ -6,6 +6,9 @@ Python Commodore BBS multi-client
 This is intended for commodore 64, c128 and most commodore compatible machines (as the new Commander X16 under development) 
 
 This is a working Python 3.X script that will help you implement a Commodore Petscii BBS.
+- You have to setup MySQL database "cbmbbs" with the instructions below this readme
+- Basic functionality: Login and Register a NEW user
+- In progress: Sample board read and write posts. (*not* in this release)
 
 Included Files:
 
