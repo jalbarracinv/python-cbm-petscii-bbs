@@ -128,7 +128,15 @@ def input_line(connection):
            print("no data - closed connection")
            connection.close()
            break
-        if (data==b'\xff' or data==b'\xfb' or data==b'\x00' or data==b'\x01' or data==b'\xfd'):
+        if (data==b'\xff' or data==b'\xe6' or data==b'\xfe' or data==b'\xfb' or data==b'\x00' or data==b'\x01' or data==b'\xfd'):
+           data=b''
+        if (data==b'\xff\xfb\x01'):
+           data=b''
+        if (data==b'\xff\xfb\x00'):
+           data=b''
+        if (data==b'\xff\xfb\x00\xff\xfd\x00'):
+           data=b''
+        if (data==b'\xff\xfb\x00\xff\xfb\x00'):
            data=b''
         if (data==b'\xff\xfb\x01\xff\xfb\x00\xff\xfd\x00'):
            data=b''
@@ -197,7 +205,8 @@ def get_char(connection):
 
 #this is to send the SEQ file to the user (useful for petscii graphics portions)
 def send_seq(connection, filen):
-    print (filen)
+    print("inicio send_seq")
+    print("FN->",filen)
     with open(filen, "rb") as f:
         nb=b''
         byte = f.read(1)

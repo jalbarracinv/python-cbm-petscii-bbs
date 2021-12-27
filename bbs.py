@@ -41,7 +41,7 @@ def do_welcome(connection):
          #SEND HEADER FILE (.SEQ)
          # print ("STATUS > will send seq")
          send_ln(connection, "\n\n") #sends text
-         send_seq(connection, "welcome.seq") #sends a seq file to screen
+         send_seq(connection, "seq/welcome.seq") #sends a seq file to screen
 
          #THIS SECTION SENDS RANDOM THINGS (FOR YOU TO LEARN HOW)
          send_cr(connection, "red") #cbmcursor sends color red code
@@ -57,6 +57,14 @@ def do_welcome(connection):
          send_ln(connection, "up1")
          cursorxy(connection,1,25)
          send_ln(connection, "down25")
+         cursorxy(connection,10,20)
+         get_char(connection)
+
+         send_cr(connection, "clear") #sends a coded cursor
+         send_cr(connection, "home") #sends a coded cursor
+         send_seq(connection, "seq/colaburger.seq")
+         cursorxy(connection,30,5)
+         get_char(connection)
 
 def do_login(connection):
 
@@ -74,7 +82,7 @@ def do_login(connection):
 
          if (uname=="new"):
              uname,realid = do_newuser(connection)
-             print("new user created")
+             print("NEW user created")
              break
 
          connection.send(cbmencode("Password: "))
@@ -97,7 +105,6 @@ def do_login(connection):
 
             # Check if there is a match
             if(realpass==upass):
-               print("match!!")
                break
             else:
                send_ln(connection, "\n\nIncorrect username or password.\n\n")
@@ -105,8 +112,7 @@ def do_login(connection):
          if (attempts>=maxtries):
                connection.send(cbmencode("\n\nSorry maximum number of attempts reached..\n\n"))
                connection.close()
-       print("ok")
-       print("uname->",uname,"realid->",realid)
+       print("JUST LOGGED IN -> uname->",uname,"realid->",realid)
        return uname,realid;
 
 def do_newuser(connection):
@@ -136,11 +142,9 @@ def do_newuser(connection):
          if(myresult == None and uname!="" and uname !="new"):
             send_ln(connection, "Your username is: "+uname+"\nAre you sure? (y/n): ")
             letter=get_char(connection)
-            print("letra: ",letter)
             send_ln(connection, "\n\n")
             attempts=attempts+1
             if(letter=="y" or letter=="Y"):
-               print("YES!")
                break
          else:
             send_ln(connection, "\nError: User already exists.\n")
@@ -159,7 +163,6 @@ def do_newuser(connection):
          send_ln(connection, "\nRepeat your password: ")
          pass2=input_pass(connection) #input_line function reads a line
          if(pass1!="" and pass2==pass1):
-           print("->"+pass1+"<-")
            break
          attempts=attempts+1
          if attempts >= maxtries:
@@ -176,7 +179,6 @@ def do_newuser(connection):
          send_ln(connection, "\nRepeat your email: ")
          mail2=input_line(connection) #input_line function reads a line
          if(mail1!="" and mail2==mail1):
-           print("email matches!")
            break
          attempts=attempts+1
          if attempts >= maxtries:
@@ -191,14 +193,14 @@ def do_newuser(connection):
        mycursor.execute(query)
        mydb.commit() #imperative
        realid=mycursor.lastrowid
-       print("new id:",realid)
+       print("NEW User just registered with id:",realid)
        return uname,realid;
 
 def do_bucle(connection,namex,idx):
 
          while True:
            #Clears Screen and sends MENU
-           print("USER -> ",namex,"->",idx)
+           print("USER -> ",namex,"->",idx,"Main Menu") #Outputs for sysop
            send_ln(connection, "\n\nChoose an option: ")
            bucl=get_char(connection)
            print(bucl)
@@ -215,10 +217,9 @@ def user_session(connection):
          send_cr(connection,"clear")
          send_cr(connection,"home")
          send_ln(connection, "Connected. Hit any key...")
-         bucl=get_char(connection)
+         bucl=input_line(connection)
 
          do_welcome(connection)
-         time.sleep(6)
 
          userx,idx = do_login(connection)
 
