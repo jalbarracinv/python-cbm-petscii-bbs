@@ -22,6 +22,8 @@ Included Files:
 
 CREATE DATABASE `cbmbbs` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
+USE `cbmbbs`
+
 CREATE TABLE `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
